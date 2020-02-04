@@ -18,6 +18,8 @@ var VIEW_SPECIAL_KEY_MAP_DEFAULT = {
 	next		: [ 'tab' ],
 	up			: [ 'up arrow' ],
 	down		: [ 'down arrow' ],
+	end			: [ 'end' ],
+	home		: [ 'home' ],
 	left		: [ 'left arrow' ],
 	right		: [ 'right arrow' ],
 	clearLine	: [ 'end of medium' ],
@@ -34,6 +36,7 @@ function View(options) {
 	this.client			= options.client;
 	
 	this.cursor			= options.cursor || 'show';
+	this.cursorStyle	= options.cursorStyle || 'default';
 
 	this.acceptsFocus	= options.acceptsFocus || false;
 	this.acceptsInput	= options.acceptsInput || false;
@@ -78,6 +81,15 @@ function View(options) {
 			sgr.push(color.bg);
 		}
 		return ansi.sgr(sgr);
+	};
+
+	this.hideCusor = function() {
+		self.client.term.write(ansi.hideCursor());
+	};
+
+	this.restoreCursor = function() {
+		//this.client.term.write(ansi.setCursorStyle(this.cursorStyle));
+		this.client.term.write('show' === this.cursor ? ansi.showCursor() : ansi.hideCursor());
 	};
 }
 
@@ -165,7 +177,7 @@ View.prototype.setFocus = function(focused) {
 	assert(this.acceptsFocus, 'View does not accept focus');
 
 	this.hasFocus = focused;
-	this.client.term.write('show' === this.cursor ? ansi.showCursor() : ansi.hideCursor());
+	this.restoreCursor();
 };
 
 View.prototype.onKeyPress = function(key, isSpecial) {

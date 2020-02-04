@@ -4,6 +4,8 @@
 var TextView		= require('./text_view.js').TextView;
 var miscUtil		= require('./misc_util.js');
 var strUtil			= require('./string_util.js');
+var ansi			= require('./ansi_term.js');
+
 var util			= require('util');
 var assert			= require('assert');
 var _				= require('lodash');
@@ -13,6 +15,7 @@ exports.EditTextView	= EditTextView;
 function EditTextView(options) {
 	options.acceptsFocus 	= miscUtil.valueWithDefault(options.acceptsFocus, true);
 	options.acceptsInput	= miscUtil.valueWithDefault(options.acceptsInput, true);
+	options.cursorStyle		= miscUtil.valueWithDefault(options.cursorStyle, 'steady block');
 	options.resizable		= false;
 	
 	TextView.call(this, options);
